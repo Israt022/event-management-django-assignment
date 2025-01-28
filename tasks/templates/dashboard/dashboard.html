@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class=''>
+    <div class = ''>
+        <div class='w-full bg-orange-300 flex justify-between items-center px-10 py-10' >
+            <h2 class='text-2xl font-bold text-orange-600 mb-6'>Dashboard</h2>
+            <div class='flex justify-between'>
+                <ul class='flex gap-5 spacey-4'>
+                    <li><a href="{% url 'main' %}" class='text-orange-600 font-bold hover:text-white'>Home</a></li>
+                    <li><a href="{% url 'category_list' %}" class='text-orange-600 font-bold hover:text-white'>Category</a></li>
+                    <li><a href="{% url 'event_list' %}" class='text-orange-600 font-bold hover:text-white'>Event</a></li>
+                    <li><a href="{% url 'participant_list' %}" class='text-orange-600 font-bold hover:text-white'>Participant</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class='w-full p-10'>
+            <div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-5'>
+        
+                
+                {% comment %} Total Participant  {% endcomment %}
+                <div class='bg-orange-400 rounded-xl p-6 shadow-sm'>
+                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL PARTICIPANT</h3>
+                    <p class='text-3xl font-semibold text-white mb-1'>{{total_participant}}</p>
+                </div>
+                {% comment %} Total Event  {% endcomment %}
+                <div class='bg-orange-400 rounded-xl p-6 shadow-sm'>
+                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL EVENT</h3>
+                    <p class='text-3xl font-semibold text-white mb-1'>
+                        <a href="?filter=all" class='hover:text-white text-white font-bold text-4xl'>{{total_event}}</a>
+                    </p>
+                </div>
+                {% comment %} Upcomming Event  {% endcomment %}
+                <div class='bg-orange-400 rounded-xl p-6 shadow-sm'>
+                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL UPCOMMING EVENT</h3>
+                    <p class='text-3xl font-semibold text-white mb-1'>
+                        <a href="?filter=upcoming" class='hover:text-white text-white font-bold text-4xl'>{{upcoming_events}}</a>
+                    </p>
+                </div>
+                {% comment %} Past Event  {% endcomment %}
+                <div class='bg-orange-400 rounded-xl p-6 shadow-sm'>
+                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL PAST EVENT</h3>
+                    <p class='text-3xl font-semibold text-white mb-1'>
+                        <a href="?filter=past" class='hover:text-white text-white font-bold text-4xl'>{{past_events}}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class = 'mt-10'>
+        <h3 class='text-lg font-bold text-orange-500 text-center '>Today's Event</h3>
+
+        <ul class='px-20 py-5 m-auto'>
+            {% if today_events %}
+                {% for event in today_events %}
+                    <li class='bg-orange-100 p-4 rounded-md mb-4 shadow-md px-4 py2'>
+                        <h4 class='font-bold text-lg text-orange-500'>
+                            {{event.name}}
+                        </h4>
+                        <p class='text-black-700 '>{{event.description}}</p>
+                        <p class='text-black-700 font-bold mt-2'>{{event.date|date:'F ,Y'}}</p>
+                    </li>
+                {% endfor %}
+                {% else %}
+                <p class='text-orange-600 text-center font-bold items-center text-4xl mt-20 mb-20'>No events scheduled for today!</p>
+            {% endif %}
+        </ul>
+
+    </div>
+</body>
+</html>

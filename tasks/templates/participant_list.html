@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% comment %} <link rel="stylesheet" href="{% static "css/output.css" %}"> {% endcomment %}
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class = 'bg-gray-50'>
+    <div class='w-full bg-orange-300 flex justify-between items-center px-10 py-6'>
+        <a href={% url "dashboard" %} class='cursor-pointer text-2xl  text-orange-600 mb-6 px-3 py-1 hover:text-yellow-400 font-bold mt-2'>Dashboard</a>
+        <div class='flex justify-between'>
+            <ul class='flex gap-5 spacey-4'>
+                <li><a href="{% url 'main' %}" class='text-orange-600 font-bold hover:text-white'>Home</a></li>
+                
+                <p class='text-orange-600 font-bold hover:text-white'>About</p>
+                <p class='text-orange-600 font-bold hover:text-white'>Contact</p>
+                
+            </ul>
+        </div>
+    </div>
+    <div>
+        <a href = "{% url 'participant_form' %}" class='flex items-center space-x-2 bg-orange-400 rounded-md px-3 py-1 mt-5 ml-4 max-w-max'>
+            <span class = 'text-white'>Participant</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-white size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>   
+            </a>
+    </div>
+    <h1 class='items-center text-4xl font-semibold text-orange-500 text-center'>Participant</h1>
+    <div class='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 px-10 py-5'>
+        {% for participant in participant %}
+        <div class='bg-orange-100 p-5 rounded-lg shadow-md'>
+            <p class='text-orange-600 font-bold'>{{participant.name}}</p>
+            <p class='mt-2 text-black'>{{participant.email}}</p>
+            <div class='mt-4 flex space-x-2'>
+                <a href='{% url "participant_update" participant.id %}' type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
+                    Edit
+                </a>
+                <form action="{% url 'participant_delete' participant.id %}" method='POST'>
+                    {% csrf_token %}
+                    <button type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+
+        {% endfor %}
+    </div>
+</body>
+</html>

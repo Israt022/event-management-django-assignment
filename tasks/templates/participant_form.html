@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% comment %} <link rel="stylesheet" href="{% static "css/output.css" %}"> {% endcomment %}
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class='bg-gray-50'>
+    <div class='w-full bg-orange-300 flex justify-between items-center px-10 py-6'>
+        <a href={% url "dashboard" %} class='cursor-pointer text-2xl  text-orange-600 mb-6 px-3 py-1 hover:text-yellow-400 font-bold mt-2'>Dashboard</a>
+        <div class='flex justify-between'>
+            <ul class='flex gap-5 spacey-4'>
+                <li><a href="{% url 'main' %}" class='text-orange-600 font-bold hover:text-white'>Home</a></li>
+                
+                <p class='text-orange-600 font-bold hover:text-white'>About</p>
+                <p class='text-orange-600 font-bold hover:text-white'>Contact</p>
+                
+            </ul>
+        </div>
+    </div>
+    <div class='w-1/2 mx-auto mt-8 border-2 shadow-lg px-5 py-5 rounded-md flex flex-col items-center justify-center'>
+        <h2 class='text-center font-semibold text-rose-500'>ADD NEW Participant</h2>
+        {% if messages %}
+            <div class = 'messages'>
+                {% for message in messages %}
+                    <div class='message'>
+                        <p>{{message}}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form action="" method = 'POST' >
+            {% csrf_token %}
+            <div class='space-y-4 '>
+                {{form_participant}}
+            </div>
+            <button type='submit' class='mb-5 bg-rose-500 px-3 py-2 text-white mt-2 rounded-md '>Submit</button>
+        </form>
+        </form>
+    </div>
+</body>
+</html>
