@@ -44,9 +44,7 @@ class CategoryForm(StyledFormMixin,forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name','description']
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args,**kwargs)  
-        self.apply_styled_widgets()      
+          
     
     
     
@@ -86,6 +84,11 @@ class ParticipantForm(StyledFormMixin,forms.ModelForm):
         self.apply_styled_widgets()
 
 class StyledFormMixin:
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)  
+        self.apply_styled_widgets()
+        
     default_classes = 'mt-5 border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:outline-none focus:border-rose-500 focus:ring-rose-500'
     
     def apply_styled_widgets(self):
@@ -122,4 +125,9 @@ class StyledFormMixin:
             elif isinstance(field.widget,forms.Select):
                 field.widget.attrs.update({
                     'class' : 'border-2 border-gray-300  p-3  rounded-lg shadow-sm focus: outline-none   focus: border-rose-500 focus:ring-rose-500 '
+                })
+            else:
+                print("Inside else")
+                field.widget.attrs.update({
+                    'class': self.default_classes
                 })
