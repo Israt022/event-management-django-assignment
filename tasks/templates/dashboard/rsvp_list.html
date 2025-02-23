@@ -1,16 +1,14 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    {% comment %} <link rel="stylesheet" href="{% static "css/output.css" %}"> {% endcomment %}
+    <title>RSVP List</title>
     <script src="https://cdn.tailwindcss.com"></script> 
 </head>
 <body class = 'bg-gray-50'>
     <div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
-        <a href="{% url 'dashboard' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>Dashboard</a>
+        <a href="{% url 'admin-dashboard' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>Dashboard</a>
         <div class='flex justify-between'>
             <ul class='flex gap-5 spacey-4'>
                 <li><a href="{% url 'main' %}" class='text-orange-100 font-bold hover:text-orange-300'>Home</a></li>
@@ -21,38 +19,39 @@
             </ul>
         </div>
     </div>
-    <div>
-        <a href = "{% url 'event_form' %}" class='flex items-center space-x-2 bg-orange-400 rounded-md px-3 py-1 mt-5 ml-4 max-w-max'>
-            <span class = 'text-white'>Event</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-white size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>   
-            </a>
-    </div>
-    <h1 class='items-center text-4xl font-semibold text-orange-500 text-center'>EVENT</h1>
-    <div class='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 px-10 py-5'>
-        {% for event in events %}
-        <div class='bg-orange-100 p-5 rounded-lg shadow-md'>
-            <img src={{event.asset.url}} alt="{{event.name}}" class='w-full h-40 object-cover rounded-md mb-4'>
-            <p class='text-orange-600 font-bold'>{{event.name}}</p>
-            <p class='mt-2 text-black'>{{event.description}}</p>
-            <p class='mt-2 text-black'>{{event.time}}</p>
-            <p class='mt-2 text-black'>{{event.location}}</p>
-            <div class='mt-4 flex space-x-2'>
-                <a href='{% url "event_update" event.id %}' type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
-                    Edit
-                </a>
-                <form action="{% url 'event_delete' event.id %}" method='POST'>
-                    {% csrf_token %}
-                    <button type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
-                        Delete
-                    </button>
-                </form>
-            </div>
-        </div>
-        
-
-        {% endfor %}
+    <div class="bg-indigo-50 p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-6 text-orange-500 text-center">RSVP List</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr class="bg-orange-200">
+                    <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-lg leading-4 text-gray-600">Event Name</th>
+                    <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-lg leading-4 text-gray-600">Date</th>
+                    <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-lg leading-4 text-gray-600">Location</th>
+                    <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-lg leading-4 text-gray-600">Actions</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+              {% for event in events %}
+                <tr class="bg-orange-50 hover:bg-orange-200">
+                    
+                    <td class="py-3 px-4 border-b border-gray-300"><a href="#">{{event.name}}</a></td>
+                    <td class="py-3 px-4 border-b border-gray-300">{{event.date}}</td>
+                    <td class="py-3 px-4 border-b border-gray-300">{{event.location}}</td>
+                    <td class="py-3 px-4 border-b border-gray-300">
+                        <a href="{% url 'rsvp_view' event.id %}" class="text-white hover:text-orange-700 px-2 py-1 bg-orange-500 rounded-md">
+                            View
+                        </a>
+                        {% comment %} <a href="#" class="text-indigo-500 hover:text-indigo-700 ml-4" onclick="openModal('{{ event.id }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </a> {% endcomment %}
+                    </td>
+                  </tr>
+            </tbody>
+            {% endfor %} 
+        </table>
+      </div>
     </div>
     <footer class="bg-black text-white py-12">
         <div class="container mx-auto px-6">

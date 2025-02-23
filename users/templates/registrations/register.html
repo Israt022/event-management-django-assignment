@@ -1,14 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <script src="https://cdn.tailwindcss.com"></script> 
-</head>
-<body>
-    <h1>Welcome!</h1>
-    <div>
+{% extends "base.html" %}
+{% block content %}
+<div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
+        <a href="{% url 'home' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>EVENT</a>
+        <div class='flex justify-between'>
+            <ul class='flex gap-5 spacey-4'>
+                <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>Home</p>
+                <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>About</p>
+                <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Contact</p>
+            </ul>
+        </div>
+        
+        <div class="flex gap-1">
+            <a
+            href="{% url 'sign-in' %}"
+            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            >Sign In</a
+            >
+            <a
+            href="{% url 'sign-up' %}"
+            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            >Sign Up</a
+            >
+        </div>
+
+        
+    </div>
+    {% comment %}  {% endcomment %}
+    <div class='mx-auto my-9  w-1/2'>
         {% if form.non_field_errors %}
             {% for error in form.non_field_errors %}
                 {{error}}
@@ -35,8 +53,7 @@
                     {% endif %}
                 </p>
             {% endfor %}
-            <button>Submit</button>
+            <button class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 mt-3" type='submit'>Sign Up</button>
         </form>
     </div>
-</body>
-</html>
+{% endblock content %}

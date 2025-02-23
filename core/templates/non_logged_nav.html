@@ -1,0 +1,30 @@
+{% load static %}
+<header class='relative w-full h-screen'>
+    <div class=''>
+        <img src="{% static "images/bgimg.avif" %}" alt="" class='w-full h-screen bg-cover bg-center opacity-90'>
+    </div>
+    <div class='absolute inset-0 bg-black opacity-40'></div>
+    <div class='absolute top-0 w-full flex justify-between items-center px-5 py-5'>
+       <div class='flex items-center'>
+        <p class=' font-bold text-6xl text-orange-400'>EVENT</p>
+       </div>
+        <div class='hidden md:flex space-x-4'>
+            {% comment %} <a href={% url "dashboard" %} class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Dashboard</a> {% endcomment %}
+            <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Home</p>
+            <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>About</p>
+            <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Contact</p>
+        </div>
+        <div class="flex gap-1">
+            <a
+              href="{% url 'sign-in' %}"
+              class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+              >Sign In</a
+            >
+            <a
+              href="{% url 'sign-up' %}"
+              class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+              >Sign Up</a
+            >
+        </div>
+    </div>
+</header>

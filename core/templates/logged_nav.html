@@ -1,0 +1,17 @@
+<header class='relative w-full h-screen'>
+    <div class=''>
+        <img src="{% static "images/bgimg.avif" %}" alt="" class='w-full h-screen bg-cover bg-center opacity-90'>
+    </div>
+    <div class='absolute inset-0 bg-black opacity-40'></div>
+    <div class='absolute top-0 w-full px-5 py-5'>
+       <div class='flex items-center'>
+        <p class=' font-bold text-6xl text-orange-400'>EVENT</p>
+       </div>
+        <div class='absolute top-5 right-5 flex space-x-4'>
+            <a href={% url "dashboard" %} class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Dashboard</a>
+            <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Home</p>
+            <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>About</p>
+            <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Contact</p>
+        </div>
+    </div>
+</header>

@@ -1,11 +1,31 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-from tasks.forms import CategoryForm,EventForm,ParticipantForm
-from tasks.models import Category,Event,Participant
+from tasks.forms import CategoryForm,EventForm,CustomPasswordResetConfirmForm,CustomPasswordResetForm
+from tasks.models import Category,Event
 from django.contrib import messages
 from django.db.models import Q,Count,Max,Min
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required,user_passes_test
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordResetView,PasswordResetConfirmView
 # Create your views here.
+
+def is_admin(user):
+    return user.groups.filter(name = 'Admin').exists()
+ 
+def is_organizer(user):
+    return user.groups.filter(name = 'Organizer').exists()
+def is_user(user):
+    return user.groups.filter(name = 'User').exists()
+ 
+def is_admin_or_organizer(user):
+    return user.groups.filter(name__in = ['Admin','Organizer']).exists()
+def is_admin_or_user(user):
+    return user.groups.filter(name__in = ['Admin','User']).exists()
+ 
+@login_required
 def main(request):
     events = Event.objects.all()
     category = Category.objects.all()
@@ -34,10 +54,13 @@ def main(request):
         'search_query':search_query
         }
     return render(request,'dashboard/main.html',context)
+
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def dashboard(request):
     total_category = Category.objects.all().count()
     total_event =Event.objects.all().count()
-    total_participant = Participant.objects.aggregate(count = Count('id'))['count']
+    total_participant = User.objects.aggregate(count = Count('id'))['count']
     upcoming_events = Event.objects.filter(date__gte = timezone.now()).count()
     past_events = Event.objects.filter(date__lt = timezone.now()).count()
     
@@ -47,12 +70,16 @@ def dashboard(request):
     
     if event_filter == 'upcoming':
         today_events = Event.objects.filter(date__gte = today)
+        title = 'Upcoming Events'
     elif event_filter == 'past':
         today_events = Event.objects.filter(date__lt = today)
+        title = 'Past Events'
     elif event_filter == 'all':
         today_events = Event.objects.all()
+        title = 'Total Events'
     else:
         today_events = Event.objects.filter(date = today)
+        title = "Today' Events"
     context = {
         'total_category':total_category,
         'total_event':total_event,
@@ -61,9 +88,12 @@ def dashboard(request):
         'past_events':past_events,
         'today_events':today_events,
         'event_filter':event_filter,
+        'title':title
     }
     return render(request,'dashboard/dashboard.html',context)
 '''Create catagory Form'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def category_form(request):
     # form_category = CategoryForm()
     
@@ -81,11 +111,15 @@ def category_form(request):
     }
     return render(request,'category_form.html',context)
 '''Read Category'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def category_list(request):
     category = Category.objects.all()
     return render(request,'category_list.html',{'category':category})
 
 '''Update Category'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def category_update(request,id):
     category = Category.objects.get(id=id)
     if request.method == 'POST':
@@ -99,6 +133,8 @@ def category_update(request,id):
     return render(request,'category_form.html',{'form_category':form_category})
 
 '''Delete Category'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def category_delete(request,id):
     if request.method == 'POST':
         category = Category.objects.get(id = id)
@@ -109,14 +145,15 @@ def category_delete(request,id):
         messages.error(request,'Something went wrong')
         return redirect('category_list')
 
-
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def event_form(request):
     category = Category.objects.all()
     events = Event.objects.all()
     form_event = EventForm(category = category)
     
     if request.method == 'POST':
-        form_event = EventForm(request.POST,category = category)
+        form_event = EventForm(request.POST,request.FILES,category = category )
         if form_event.is_valid():
             form_event.save()
             messages.success(request, 'Event Created Successfully')
@@ -129,12 +166,14 @@ def event_form(request):
     }
     return render(request,'event_form.html',context)
 '''Read Event'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def event_list(request):
     category_f = request.GET.get('category',None)
     start_date = request.GET.get('start_date',None)
     ende_date = request.GET.get('end_date',None)
     
-    events = Event.objects.select_related('category').prefetch_related('event')
+    events = Event.objects.select_related('category').prefetch_related('participant')
     
     if category_f:
         events = events.filter(category__id = category_f)
@@ -142,14 +181,18 @@ def event_list(request):
     if start_date:
         events = events.filter(date__range = [start_date,ende_date])
     
-    total_participant = Participant.objects.count()
+    total_participant = User.objects.count()
     
     context = {
         'events' : events,
         'total_participant' : total_participant,
-    }        
+    }  
+    print(events,total_participant)      
     return render(request,'event_list.html',context)
+
 '''Update Event'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def event_update(request,id):
     event = Event.objects.get(id=id)
     categories = Category.objects.all()
@@ -164,6 +207,8 @@ def event_update(request,id):
     return render(request,'event_form.html',{'form_event':form_event})
 
 '''Delete Category'''
+@login_required
+@user_passes_test(is_admin_or_organizer,login_url='no-permission')
 def event_delete(request,id):
     if request.method == 'POST':
         event = Event.objects.get(id = id)
@@ -173,7 +218,7 @@ def event_delete(request,id):
     else:
         messages.error(request,'Something went wrong')
         return redirect('event_list')
-
+@login_required
 def event_detail(request,id):
     event = Event.objects.filter(id=id).first()
     if not event:
@@ -183,49 +228,109 @@ def event_detail(request,id):
     }
     return render(request,'event_detail.html',context)
 
-def participant_form(request):
-    events = Event.objects.all()
-    form_participant = ParticipantForm(events = events)
+# @user_passes_test(is_admin,login_url='no-permission')
+# def participant_form(request):
+#     events = Event.objects.all()
+#     form_participant = ParticipantForm(events = events)
     
-    if request.method == 'POST':
-        form_participant = ParticipantForm(request.POST,events = events)
-        if form_participant.is_valid():
-            form_participant.save()
-            messages.success(request,'Participant added Succeccfully!')
-            return redirect('participant_form')
-    else:
-        form_participant = ParticipantForm(events=events)
+#     if request.method == 'POST':
+#         form_participant = ParticipantForm(request.POST,events = events)
+#         if form_participant.is_valid():
+#             form_participant.save()
+#             messages.success(request,'Participant added Succeccfully!')
+#             return redirect('participant_form')
+#     else:
+#         form_participant = ParticipantForm(events=events)
         
-    context = {
-        'form_participant' : form_participant
-    }
-    return render(request,'participant_form.html',context)
+#     context = {
+#         'form_participant' : form_participant
+#     }
+#     return render(request,'participant_form.html',context)
 
 '''Read Participant'''
+@user_passes_test(is_admin,login_url='no-permission')
 def participant_list(request):
-    participant = Participant.objects.all()
+    participant = User.objects.all()
     return render(request,'participant_list.html',{'participant':participant})
 '''Update Participant'''
-def participant_update(request,id):
-    participant = Participant.objects.get(id=id)
-    events = Event.objects.all()
-    if request.method == 'POST':
-        form_participant=  ParticipantForm(request.POST,events = events,instance = participant)
-        if form_participant.is_valid():
-            form_participant.save()
-            messages.success(request,'Participant Updated Successfully')
-            return redirect('participant_list')
-    else:
-        form_participant = ParticipantForm(events = events,instance=participant)
-    return render(request,'participant_form.html',{'form_participant':form_participant})
+# @user_passes_test(is_admin,login_url='no-permission')
+# def participant_update(request,id):
+#     participant = User.objects.get(id=id)
+#     events = Event.objects.all()
+#     if request.method == 'POST':
+#         form_participant=  ParticipantForm(request.POST,events = events,instance = participant)
+#         if form_participant.is_valid():
+#             form_participant.save()
+#             messages.success(request,'Participant Updated Successfully')
+#             return redirect('participant_list')
+#     else:
+#         form_participant = ParticipantForm(events = events,instance=participant)
+#     return render(request,'participant_form.html',{'form_participant':form_participant})
 
 '''Delete Participant'''
+@user_passes_test(is_admin,login_url='no-permission')
 def participant_delete(request,id):
     if request.method == 'POST':
-        participant = Participant.objects.get(id = id)
+        participant = User.objects.get(id = id)
         participant.delete()
         messages.success(request,'Participant Deleted Successfully')
         return redirect('participant_list')
     else:
         messages.error(request,'Something went wrong')
         return redirect('participant_list')
+    
+@login_required
+@user_passes_test(is_user, login_url='no-permission')
+def rsvp_event(request,event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.user not in event.participant.all():
+        event.participant.add(request.user)
+        return redirect('main')
+    return messages.error(request,"Already RSVP'd")
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign-in')
+    html_email_template_name = 'registration/reset_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['protocol'] = 'https' if self.request.is_secure() else 'http'
+        context['domain'] = self.request.get_host()
+        return context
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, 'A Reset email sent. Please check your email')
+        return super().form_valid(form)
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomPasswordResetConfirmForm
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign-in')
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, 'Password reset successfully')
+        return super().form_valid(form)
+    
+@login_required
+@user_passes_test(is_admin, login_url='no-permission')
+
+def rsvp_list(request):
+    events = Event.objects.filter(participant=request.user)
+    return render(request, 'dashboard/rsvp_list.html',{'events':events})
+
+def rsvp_view(request,event_id):
+    event = get_object_or_404(Event,id=event_id)
+
+    user_rsvp = event.participant.filter(id=request.user.id).first()
+
+    return render(request, 'dashboard/rsvp_view.html', {
+        'event': event,
+        'user_rsvp': user_rsvp      
+    })
+    

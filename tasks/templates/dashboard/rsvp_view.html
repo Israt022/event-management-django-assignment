@@ -1,12 +1,23 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    {% comment %} <link rel="stylesheet" href="{% static "css/output.css" %}"> {% endcomment %}
+    <title>RSVP View</title>
     <script src="https://cdn.tailwindcss.com"></script> 
+    <style>
+      
+      html, body {
+          height: 100%;
+      }
+      body {
+          display: flex;
+          flex-direction: column;
+      }
+      .main-content {
+          flex-grow: 1;
+      }
+    </style>
 </head>
 <body class = 'bg-gray-50'>
     <div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
@@ -21,39 +32,38 @@
             </ul>
         </div>
     </div>
-    <div>
-        <a href = "{% url 'event_form' %}" class='flex items-center space-x-2 bg-orange-400 rounded-md px-3 py-1 mt-5 ml-4 max-w-max'>
-            <span class = 'text-white'>Event</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-white size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>   
-            </a>
-    </div>
-    <h1 class='items-center text-4xl font-semibold text-orange-500 text-center'>EVENT</h1>
-    <div class='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 px-10 py-5'>
-        {% for event in events %}
-        <div class='bg-orange-100 p-5 rounded-lg shadow-md'>
-            <img src={{event.asset.url}} alt="{{event.name}}" class='w-full h-40 object-cover rounded-md mb-4'>
-            <p class='text-orange-600 font-bold'>{{event.name}}</p>
-            <p class='mt-2 text-black'>{{event.description}}</p>
-            <p class='mt-2 text-black'>{{event.time}}</p>
-            <p class='mt-2 text-black'>{{event.location}}</p>
-            <div class='mt-4 flex space-x-2'>
-                <a href='{% url "event_update" event.id %}' type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
-                    Edit
-                </a>
-                <form action="{% url 'event_delete' event.id %}" method='POST'>
-                    {% csrf_token %}
-                    <button type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-orange-300 focus:ring-0 rounded-md '>
-                        Delete
-                    </button>
-                </form>
+    <main class="main-content">
+      <h1 class='text-2xl font-semibold mb-6 text-orange-500 text-center'>RSVP for </h1>
+      <div class="w-2/6 container mx-auto px-6 py-20">
+        <div class="bg-white p-6 rounded shadow-lg">
+            <h2 class="text-xl font-extrabold text-black mb-4">{{ event.name }}</h2>
+            <p class='flex gap-2 mb-5'><strong>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z" />
+              </svg>
+              
+            </strong>{{ event.date }}</p>
+            <p class='flex gap-2 mb-5 font-sans'><strong>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+            </svg>
+            </strong> {{ event.location }}</p>
+            {% comment %} <p>{{ user_rsvp.user.first_name }} {{ user_rsvp.user.last_name }}</p> {% endcomment %}
+            <ul>
+              {% for user in event.participant.all %}
+                  <li class='text-xl font-bold font-sans text-gray-600'>{{ user.first_name }} {{ user.last_name }}</li>
+              {% endfor %}
+              </ul>
+            <div class='mt-5'>
+              <a href="{% url 'rsvp_list' %}" class="text-white hover:text-orange-700 mt-5 px-2 py-1 bg-orange-500 rounded-md">
+                Go Back 
+              </a>
             </div>
         </div>
-        
+    </main>
 
-        {% endfor %}
-    </div>
+    
     <footer class="bg-black text-white py-12">
         <div class="container mx-auto px-6">
             <div class="flex flex-wrap justify-between">

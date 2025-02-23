@@ -1,5 +1,7 @@
 from django import forms
-from tasks.models import Category,Event,Participant
+from tasks.models import Category,Event
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm,PasswordResetForm,SetPasswordForm
 
 class StyledFormMixin:
     default_classes = 'border-2 border-gray-300 text-center w-md mt-2 p-3 rounded-lg shadow-sm focus: border-orange-500 focus:ring-orange-500 focus:ring-rose-500'
@@ -44,7 +46,20 @@ class CategoryForm(StyledFormMixin,forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name','description']
-          
+        labels = {
+            'name': 'Event Name',
+            'description': 'Description',
+        }
+        widgets ={
+            'name': forms.TextInput(attrs={
+                'class': 'p-2 border-blue-500 rounded', 
+                'placeholder': 'Enter Category Name',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'p-2 border-blue-500 rounded', 
+                'placeholder': 'Enter Category Description',
+            })
+        }  
     
     
     
@@ -52,7 +67,7 @@ class CategoryForm(StyledFormMixin,forms.ModelForm):
 class EventForm(StyledFormMixin,forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name','description','date','time','location','category']
+        fields = ['name','description','date','time','location','category','asset']
         widgets = {
             'date' : forms.SelectDateWidget,
             'time' : forms.TimeInput(),
@@ -68,20 +83,20 @@ class EventForm(StyledFormMixin,forms.ModelForm):
         ] 
         self.apply_styled_widgets()
         
-class ParticipantForm(StyledFormMixin,forms.ModelForm):
-    class Meta:
-        model = Participant
-        fields = ['name','email','event']
-        widgets = {
-            'event' : forms.CheckboxSelectMultiple
-        }
-    def __init__(self, *args, **kwargs):
-        events = kwargs.pop('events',[])
-        super().__init__(*args,**kwargs)
-        self.fields['event'].choices = [
-            (event.id , event.name) for event in events 
-        ] 
-        self.apply_styled_widgets()
+# class ParticipantForm(StyledFormMixin,forms.ModelForm):
+#     class Meta:
+#         model = User
+#         fields = ['name','email','event']
+#         widgets = {
+#             'event' : forms.CheckboxSelectMultiple
+#         }
+#     def __init__(self, *args, **kwargs):
+#         events = kwargs.pop('events',[])
+#         super().__init__(*args,**kwargs)
+#         self.fields['event'].choices = [
+#             (event.id , event.name) for event in events 
+#         ] 
+#         self.apply_styled_widgets()
 
 class StyledFormMixin:
     
@@ -131,3 +146,32 @@ class StyledFormMixin:
                 field.widget.attrs.update({
                     'class': self.default_classes
                 })
+                
+                
+# class RSVPForm(StyledFormMixin,forms.ModelForm):
+#     class Meta:
+#         model = RSVP
+#         fields = ['user','event']
+        
+#     def __init__(self,*args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['user'].queryset = User.objects.all()
+#         self.fields['event'].queryset = Event.objects.all()
+        
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         user = cleaned_data.get('user')
+#         event = cleaned_data.get('event')
+        
+#         if RSVP.objects.filter(user=user,event=event).exists():
+#             raise forms.ValidationError("You have already RSVP for this event.")
+        
+#         return cleaned_data
+
+
+class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
+    pass
+
+
+class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
+    pass
