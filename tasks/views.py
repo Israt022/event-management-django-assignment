@@ -187,7 +187,7 @@ def event_list(request):
         'events' : events,
         'total_participant' : total_participant,
     }  
-    print(events,total_participant)      
+    # print(events,total_participant)      
     return render(request,'event_list.html',context)
 
 '''Update Event'''
@@ -319,11 +319,11 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     
 @login_required
 @user_passes_test(is_admin, login_url='no-permission')
-
 def rsvp_list(request):
     events = Event.objects.filter(participant=request.user)
     return render(request, 'dashboard/rsvp_list.html',{'events':events})
-
+@login_required
+@user_passes_test(is_admin, login_url='no-permission')
 def rsvp_view(request,event_id):
     event = get_object_or_404(Event,id=event_id)
 
