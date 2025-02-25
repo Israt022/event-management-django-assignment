@@ -163,6 +163,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
-FRONTEND_URL = 'http://127.0.0.1:8000'
+# FRONTEND_URL = 'http://127.0.0.1:8000'
+FRONTEND_URL = 'https://event-management-django-assignment.onrender.com'
 
 LOGIN_URL = 'sign-in'

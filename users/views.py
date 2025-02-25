@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User,Group
 from users.forms import RegisterForm,CustomRegistrationForm,AssignRoleForm,CreateGroupForm
@@ -8,6 +8,8 @@ from users.forms import LoginForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.db.models import Prefetch
+from django.http import HttpResponseBadRequest
+
 # Create your views here.
 def is_admin(user):
     return user.groups.filter(name = 'Admin').exists()
@@ -56,21 +58,31 @@ def sign_out(request):
         logout(request)
         return redirect('sign-in')
     
-def activate_user(request,user_id,token):
-    try:
-        user = User.objects.get(id = user_id )
+# def activate_user(request,user_id,token):
+#     try:
+#         user = User.objects.get(id = user_id )
     
-        if default_token_generator.check_token(user,token):
-            user.is_active = True
-            user.save()
-            return redirect('sign-in')
+#         if default_token_generator.check_token(user,token):
+#             user.is_active = True
+#             user.save()
+#             return redirect('sign-in')
         
-        else:
-            return HttpResponse('Invalid Id or Token')
+#         else:
+#             return HttpResponse('Invalid Id or Token')
         
-    except User.DoesNotExist:
-        return HttpResponse('User not Found')
-    
+#     except User.DoesNotExist:
+#         return HttpResponse('User not Found')
+def activate_user(request, user_id, token):
+    user = get_object_or_404(User, id=user_id)
+
+    if default_token_generator.check_token(user, token):
+        user.is_active = True
+        participant_group, created = Group.objects.get_or_create(name="Participant")
+        user.groups.add(participant_group)
+        user.save()
+        return redirect('sign-in')
+    else:
+        return HttpResponseBadRequest('Invalid ID or Token')    
 
 @user_passes_test(is_admin,login_url='no-permission')
 def admin_dashboard(request):  
