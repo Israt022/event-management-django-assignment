@@ -70,7 +70,11 @@ class EventForm(StyledFormMixin,forms.ModelForm):
         fields = ['name','description','date','time','location','category','asset']
         widgets = {
             'date' : forms.SelectDateWidget,
-            'time' : forms.TimeInput(),
+            # 'time' : forms.TimeInput(),
+            'time': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+            }),
             'category' : forms.Select,
             
         }

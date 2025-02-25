@@ -26,6 +26,7 @@ def is_admin_or_user(user):
     return user.groups.filter(name__in = ['Admin','User']).exists()
  
 @login_required
+@user_passes_test(is_admin_or_user,login_url='no-permission')
 def main(request):
     events = Event.objects.all()
     category = Category.objects.all()
@@ -318,12 +319,15 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         return super().form_valid(form)
     
 @login_required
-@user_passes_test(is_admin, login_url='no-permission')
+@user_passes_test(is_admin_or_user, login_url='no-permission')
 def rsvp_list(request):
+    print('rsvp')
     events = Event.objects.filter(participant=request.user)
+    # events = Event.objects.all()
+    print("RSVCP Cheack",events)
     return render(request, 'dashboard/rsvp_list.html',{'events':events})
 @login_required
-@user_passes_test(is_admin, login_url='no-permission')
+@user_passes_test(is_admin_or_user, login_url='no-permission')
 def rsvp_view(request,event_id):
     event = get_object_or_404(Event,id=event_id)
 
