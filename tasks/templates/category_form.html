@@ -26,7 +26,7 @@
         {% if messages %}
             <div class = 'messages'>
                 {% for message in messages %}
-                    <div class='message'>
+                <div class="px-2 py-1 {% if message.tags == 'success' %}text-green-500 font-semibold font-sans{% endif %} ">
                         <p>{{message}}</p>
                     </div>
                 {% endfor %}
@@ -38,7 +38,10 @@
                 {{form_category.as_p}}
             </div>
             
-            <button type='submit' class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Submit</button>
+            <div class='mt-10 flex justify-between gap-15'>
+              <button type='submit' class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Submit</button>
+              <a href="{% url 'category_list' %}" class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Go Back</a>
+            </div>
         </form>
        
     </div>

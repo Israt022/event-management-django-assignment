@@ -23,6 +23,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com','http://127.0.0.1:8000']
 
+AUTH_USER_MODEL = 'users.CustomUser'
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,7 +90,7 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.        
-        default='postgresql://event_management_db_yxq9_user:6n8EjpN7jtkad1xtjefeaP7F6CsbMrhA@dpg-cuu94spopnds739uq130-a.oregon-postgres.render.com/event_management_db_yxq9',        
+        default='postgresql://event_management_db_y2fg_user:SzHqLnL40ScBaZrYGXRXtSLkxKSyd6Gz@dpg-cvdevfl2ng1s73fc3b40-a.oregon-postgres.render.com/event_management_db_y2fg',        
         conn_max_age=600    
         )}
 
@@ -128,7 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -166,4 +168,6 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 # FRONTEND_URL = 'http://127.0.0.1:8000'
 FRONTEND_URL = 'https://event-management-django-assignment.onrender.com'
 
-LOGIN_URL = 'sign-in'
+LOGIN_URL = '/users/sign-in/'
+LOGIN_REDIRECT_URL = '/tasks/dashboardMain/'
+LOGOUT_REDIRECT_URL = '/'

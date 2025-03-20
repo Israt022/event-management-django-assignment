@@ -1,10 +1,10 @@
 from django import forms
 from tasks.models import Category,Event
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm,PasswordResetForm,SetPasswordForm
 
 class StyledFormMixin:
-    default_classes = 'border-2 border-gray-300 text-center w-md mt-2 p-3 rounded-lg shadow-sm focus: border-orange-500 focus:ring-orange-500 focus:ring-rose-500'
+    default_classes = ' border-2 border-gray-300 text-center w-md mt-2 p-3 rounded-lg shadow-sm focus:outline-none focus: border-orange-500 focus:ring-orange-500 focus:ring-orange-500'
     
     def apply_styled_widgets(self):
          for field_name,field in self.fields.items():
@@ -41,6 +41,10 @@ class StyledFormMixin:
                 field.widget.attrs.update({
                     'class' : 'mt-2 border-2 border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus: border-orange-500 focus:ring-orange-500'
                 })
+            else:
+                field.widget.attrs.update({
+                    'class': self.default_classes
+                })
 
 class CategoryForm(StyledFormMixin,forms.ModelForm):
     class Meta:
@@ -52,15 +56,17 @@ class CategoryForm(StyledFormMixin,forms.ModelForm):
         }
         widgets ={
             'name': forms.TextInput(attrs={
-                'class': 'p-2 border-blue-500 rounded', 
+                'class': 'p-2 border-blue-500 rounded font-bold text-orange-500', 
                 'placeholder': 'Enter Category Name',
             }),
             'description': forms.Textarea(attrs={
-                'class': 'p-2 border-blue-500 rounded', 
+                'class': 'p-2 border-blue-500 rounded font-bold text-orange-500', 
                 'placeholder': 'Enter Category Description',
             })
         }  
-    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)  
+        self.apply_styled_widgets()
     
     
     
@@ -108,7 +114,7 @@ class StyledFormMixin:
         super().__init__(*args,**kwargs)  
         self.apply_styled_widgets()
         
-    default_classes = 'mt-5 border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:outline-none focus:border-rose-500 focus:ring-rose-500'
+    default_classes = 'mt-5 border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:outline-none focus:border-orange-500 focus:ring-orange-500'
     
     def apply_styled_widgets(self):
          for field_name,field in self.fields.items():

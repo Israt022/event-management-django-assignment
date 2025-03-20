@@ -37,7 +37,10 @@
             <div class='space-y-4 border-orange-400'>
                 {{form_event.as_p}}
             </div>
-            <button type='submit' class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Submit</button>
+            <div class='mt-10 flex justify-between gap-15'>
+              <button type='submit' class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Submit</button>
+              <a href="{% url 'event_list' %}" class='mb-5 bg-orange-500 px-3 py-2 text-white mt-2 rounded-md '>Go Back</a>
+            </div>
         </form>
     </div>
     <footer class="bg-black text-white py-12">

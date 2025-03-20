@@ -1,10 +1,14 @@
 import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User,Group,Permission
+from django.contrib.auth.models import Group,Permission
 from tasks.forms import StyledFormMixin
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm,PasswordResetForm,SetPasswordForm
+from users.models import CustomUser
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 class RegisterForm(StyledFormMixin,UserCreationForm):
     class Meta:
         model = User
@@ -94,4 +98,18 @@ class CreateGroupForm(StyledFormMixin,forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name','permissions']
-    
+
+class CustomPasswordChangeForm(StyledFormMixin, PasswordChangeForm):
+    pass
+
+class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
+    pass
+
+
+class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
+    pass
+
+class EditProfileForm(StyledFormMixin,forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email','first_name','last_name','bio','profile_image','phone_number']

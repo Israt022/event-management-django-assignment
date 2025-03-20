@@ -7,10 +7,20 @@ from django.db.models import Q,Count,Max,Min
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.mail import send_mail
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordResetView,PasswordResetConfirmView
+from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import PermissionRequiredMixin,LoginRequiredMixin
+from django.views.generic.list import ListView
+from django.views.generic import UpdateView,DeleteView
 # Create your views here.
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 def is_admin(user):
     return user.groups.filter(name = 'Admin').exists()
@@ -111,6 +121,24 @@ def category_form(request):
         'form_category' : form_category
     }
     return render(request,'category_form.html',context)
+
+# @method_decorator(login_required, name="dispatch")
+class CategoryFormView(LoginRequiredMixin,PermissionRequiredMixin,View):
+    form_class = CategoryForm
+    template_name = 'category_form.html'
+    login_url = 'sign-in'
+    permission_required = 'tasks.add_category'
+    def get(self,request,*args, **kwargs):
+        form_category = self.form_class()
+        return render(request, self.template_name, {"form_category": form_category})
+    def post(self,request,*args, **kwargs):
+        form_category = self.form_class(request.POST)
+        if form_category.is_valid():
+            form_category.save()
+            messages.success(request,'Category Created Successfully')
+            return redirect('category_form')
+        return render(request, self.template_name, {"form_category": form_category})
+
 '''Read Category'''
 @login_required
 @user_passes_test(is_admin_or_organizer,login_url='no-permission')
@@ -118,6 +146,19 @@ def category_list(request):
     category = Category.objects.all()
     return render(request,'category_list.html',{'category':category})
 
+class CategoryListView(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    model = Category
+    template_name = 'category_list.html'
+    login_url = 'sign-in'
+    permission_required = 'tasks.view_category'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.get_queryset() 
+        return context
+    
+
+    
 '''Update Category'''
 @login_required
 @user_passes_test(is_admin_or_organizer,login_url='no-permission')
@@ -133,6 +174,28 @@ def category_update(request,id):
         form_category = CategoryForm(instance=category)
     return render(request,'category_form.html',{'form_category':form_category})
 
+class CategoryUpdateView(LoginRequiredMixin,PermissionRequiredMixin,UpdateView):
+    model = Category
+    template_name  = 'category_form.html'
+    context_object_name = 'category'
+    login_url = 'sign-in'
+    permission_required = 'tasks.view_category'
+    fields = ['name','description']
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_category = self.get_form()
+        context["form_category"] = form_category
+        return context
+        # return render(request,'category_form.html',{'form_category':form_category})
+    def post(self,request,*args, **kwargs):
+        self.object = self.get_object()
+        form_category =  self.get_form()
+        if form_category.is_valid():
+            form_category.save()
+            messages.success(request,'Category Updated Successfully')
+            return redirect('category_list')
+        return render(request, self.template_name, {"form_category": form_category})
+
 '''Delete Category'''
 @login_required
 @user_passes_test(is_admin_or_organizer,login_url='no-permission')
@@ -144,6 +207,19 @@ def category_delete(request,id):
         return redirect('category_list')
     else:
         messages.error(request,'Something went wrong')
+        return redirect('category_list')
+
+class CategoryDeleteView(LoginRequiredMixin,PermissionRequiredMixin,DeleteView):
+    model = Category
+    login_url = 'sign-in'
+    permission_required = 'tasks.delete_category'
+    success_url = reverse_lazy("category_list")
+    def form_valid(self, form):
+    
+        messages.success(self.request,'Category Deleted Successfully')
+        return super().form_valid(form)
+    def form_invalid(self, form):
+        messages.error(self.request,'Something went wrong')
         return redirect('category_list')
 
 @login_required
@@ -337,4 +413,14 @@ def rsvp_view(request,event_id):
         'event': event,
         'user_rsvp': user_rsvp      
     })
-    
+
+@login_required
+def dashboardMain(request):
+    if is_organizer(request.user):
+        return redirect('dashboard')
+    elif is_user(request.user):
+        return redirect('main')
+    elif is_admin(request.user):
+        return redirect('admin-dashboard')
+
+    return redirect('no-permission')
