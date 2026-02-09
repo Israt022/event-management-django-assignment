@@ -11,6 +11,16 @@ User = get_user_model()
 
 @receiver(post_save,sender=User)
 def activation_email(sender,instance,created,**kwargs):
+    # Debugging prints
+    print("=== DEBUG EMAIL SETTINGS ===")
+    print("EMAIL_HOST:", settings.EMAIL_HOST)
+    print("EMAIL_PORT:", settings.EMAIL_PORT)
+    print("EMAIL_USE_TLS:", settings.EMAIL_USE_TLS)
+    print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
+    print("FRONTEND_URL:", settings.FRONTEND_URL)
+    print("User created:", created)
+    print("User email:", instance.email)
+    print("============================")
     # if created:
     #     token = default_token_generator.make_token(instance)
     #     activation_url = f"{settings.FRONTEND_URL}/users/activate/{instance.id}/{token}/"
