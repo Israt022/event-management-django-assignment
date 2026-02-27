@@ -1,12 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
-        <a href="{% url 'home' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>EventNest</a>
+<div class="fixed top-0 z-50 w-full flex justify-between items-center px-6 py-4 bg-orange-500 bg-opacity-30 backdrop-blur-md">
+          
+          <!-- Logo -->
+          <div class="flex items-center">
+              <a href="{% url 'home' %}"  
+                class="text-5xl font-extrabold bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-transparent bg-clip-text drop-shadow-lg hover:scale-105 transition-transform duration-300">
+                EventNest
+              </a>
+          </div>
         <div class='flex justify-between'>
             <ul class='flex gap-5 spacey-4'>
-                <li><a href="{% url 'main' %}" class='text-orange-100 font-bold hover:text-orange-300'>Home</a></li>
-                <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>About</p>
-                <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Contact</p>
+                <li><a href="{% url 'home' %}"  class='font-bold text-orange-500 hover:text-yellow-500'>Home</a></li>
+                
+                <a href="{% url 'about_us' %}" class="font-bold text-orange-500 hover:text-yellow-500">About Us</a>
+                <a href="{% url 'contact_us' %}" class="font-bold text-orange-500 hover:text-yellow-500">Contact Us</a>
+                
                 
             </ul>
         </div>
@@ -14,12 +23,12 @@
         <div class="flex gap-1">
             <a
             href="{% url 'sign-in' %}"
-            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            class="hidden md:block bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
             >Sign In</a
             >
             <a
             href="{% url 'sign-up' %}"
-            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            class="hidden md:block bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
             >Sign Up</a
             >
         </div>
@@ -27,21 +36,32 @@
         
     </div>
     {% comment %}  {% endcomment %}
-    <div class='mx-auto my-9  w-1/2'>
-        {% if messages %}
+    <div class='min-h-screen flex items-center justify-center bg-orange-100'>
+        <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-orange-600 mb-6">
+                Login to EventNest
+            </h2>
+            {% if messages %}
             {% for message in messages %}
                 <div class='px-2 py-1 {% if message.tags == 'success' %}bg-green-500{% endif %}'>{{message}}</div>
             {% endfor %}
         {% endif %}
-        <form  method='POST'>
+        <form  method='POST' class="space-y-4">
             {% csrf_token %}
             {{form}}
-            <button class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 mt-3" type='submit'>Sign In</button>
+            {% comment %} <button class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 mt-3" type='submit'>Sign In</button> {% endcomment %}
+            <button 
+                type="submit"
+                class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition"
+            >
+                Sign In
+            </button>
         </form>
-        <p>
-            <a href="{% url 'password_reset' %}">
+        <p class="text-center mt-4">
+            <a href="{% url 'password_reset' %}" class="text-orange-500 hover:underline">
             Forgot Password?
             </a>
         </p>
+        </div>
     </div>
 {% endblock content %}

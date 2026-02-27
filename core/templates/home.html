@@ -3,14 +3,14 @@
 {% load static %}
     {% include "non_logged_nav.html" %}
         <main>
-            <div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
+            <div class="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-yellow-500/70 via-orange-400 to-red-500/50 mx-auto">
                 <div>
-                    <p class='font-bold text-4xl text-white'>EVENT SEARCH</p>
+                    <p class='font-bold text-4xl text-white'>SEARCH EVENT</p>
                 </div>
                 <form action="{% url 'main' %}" method='GET'>
                     <div class='flex items-center space-x-2'>
-                        <input type="search" name='search' class='border-2 p-1 rounded-mb focus:outline-yellow-300' placeholder='Search...'>
-                        <button type='submit' class='mb-5 bg-orange-400 px-2 py-1 text-white mt-4 focus:text-yellow-300 focus:ring-0 rounded-md '>Search</button>
+                        <input type="search" name='search' class='border-none outline-none focus:outline-none focus:ring-0 p-1 rounded-mb ' placeholder='Search...'>
+                        <button type='submit' class='mb-5 bg-gradient-to-r from-yellow-30 via-orange-400 to-red-500 px-2 py-1 text-white mt-4 focus:text-yellow-300 focus:ring-0 rounded-md '>Search</button>
                     </div>
                 </form>
             </div>
@@ -37,7 +37,7 @@
                         <input type="date" name="start_date" id="start-date" class='border-2 p-2 rounded-md' placeholder='Start Date' value='{{request.GET.start_date}}'>
                         <input type="date" name="end_date" id="end-date" class='border-2 p-2 rounded-md' placeholder='End Date' value='{{request.GET.end_date}}'>
                     </div>
-                    <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md">Filter</button>
+                    <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded-md">Filter</button>
                 </div>
             </form>
 

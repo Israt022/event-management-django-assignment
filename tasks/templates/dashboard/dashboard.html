@@ -4,113 +4,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Manager Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script> 
 </head>
 <body class=''>
+  <header>
+    <div class="sticky top-0 z-50 w-full flex justify-between items-center px-6 py-4 bg-orange-500 bg-opacity-30 backdrop-blur-md">
+      <div class="flex items-center">
+            <a href="{% url 'dashboard' %}" 
+              class="text-4xl font-extrabold bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-transparent bg-clip-text drop-shadow-lg hover:scale-105 transition-transform duration-300">
+              Dashboard
+            </a>
+        </div>
+      <div class='flex justify-between'>
+          <ul class='flex gap-5 spacey-4'>
+              <li><a href="{% url 'home' %}"  class='font-bold text-orange-500 hover:text-yellow-500'>Home</a></li>
+              
+              <a href="{% url 'category_list' %}" class="font-bold text-orange-500 hover:text-yellow-500">Category</a>
+              <a href="{% url 'event_list' %}" class="font-bold text-orange-500 hover:text-yellow-500">Event</a>
+              
+          </ul>
+      </div>
+      <div class="flex items-center">
+        <div class="relative">
+          <button id="user-menu-button" class="flex items-center focus:outline-none">
+              <img class="h-10 w-10 rounded-full object-cover border-2 border-orange-400"
+                  src="{% if request.user.is_authenticated and request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'images/pp.png' %}{% endif %}" 
+                  alt="User avatar" />
+          </button>
+          <div
+            id="user-menu"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden"
+          >
+            <a
+              href="{% url 'admin-dashboard' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >Dashboard</a
+            >
+            <a
+              href="{% url 'profile' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >Profile</a
+            >
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+                <button
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="md:hidden ml-4">
+          <button
+            id="menu-toggle"
+            class="text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+    
+  <section>
     <div class = ''>
-        <div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
-            <a href="{% url 'dashboard' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>Dashboard</a>
-            <div class='flex justify-between'>
-                <ul class='flex gap-5 spacey-4'>
-                    <li><a href="{% url 'main' %}" class='text-orange-100 font-bold hover:text-orange-300'>Home</a></li>
-                    <li><a href="{% url 'category_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Category</a></li>
-                    <li><a href="{% url 'event_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Event</a></li>
-                    
-                </ul>
-            </div>
-            <div class="flex items-center">
-                <div class="relative">
-                  <button
-                    id="user-menu-button"
-                    class="flex items-center focus:outline-none"
-                  >
-                    <img
-                      class="h-8 w-8 rounded-full object-cover"
-                      src="{% static 'images/pp.png' %}"
-                      alt="User avatar"
-                    />
-                  </button>
-                  <div
-                    id="user-menu"
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden"
-                  >
-                    <a
-                      href="{% url 'dashboard' %}"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >Dashboard</a
-                    >
-                    <a
-                      href="{% url 'profile' %}"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >Profile</a
-                    >
-                    <form method="post" action="{% url 'logout' %}">
-                      {% csrf_token %}
-                        <button
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </form>
-                  </div>
-                </div>
-                <div class="md:hidden ml-4">
-                  <button
-                    id="menu-toggle"
-                    class="text-gray-600 hover:text-gray-800 focus:outline-none"
-                  >
-                    <svg
-                      class="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16m-7 6h7"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
+      <div class='w-full p-10'>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <!-- Total Participant -->
+          <div class="group bg-gradient-to-br from-orange-500 to-orange-600 
+                      rounded-2xl p-6 shadow-lg 
+                      transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
+
+              <h3 class="text-sm font-semibold text-orange-100 tracking-wide mb-3">
+                  TOTAL PARTICIPANT
+              </h3>
+
+              <p class="text-4xl font-bold text-white transition duration-300 group-hover:scale-110">
+                  {{ total_participant }}
+              </p>
+          </div>
+
+
+          <!-- Total Event -->
+          <div class="group bg-gradient-to-br from-orange-600 to-orange-700 
+                      rounded-2xl p-6 shadow-lg 
+                      transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
+
+              <h3 class="text-sm font-semibold text-orange-100 tracking-wide mb-3">
+                  TOTAL EVENT
+              </h3>
+
+              <p class="text-4xl font-bold text-white">
+                  <a href="?filter=all"
+                    class="transition duration-300 group-hover:scale-110 inline-block">
+                      {{ total_event }}
+                  </a>
+              </p>
+          </div>
+
+
+          <!-- Upcoming Event -->
+          <div class="group bg-gradient-to-br from-orange-500 to-yellow-500 
+                      rounded-2xl p-6 shadow-lg 
+                      transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
+
+              <h3 class="text-sm font-semibold text-orange-100 tracking-wide mb-3">
+                  TOTAL UPCOMING EVENT
+              </h3>
+
+              <p class="text-4xl font-bold text-white">
+                  <a href="?filter=upcoming"
+                    class="transition duration-300 group-hover:scale-110 inline-block">
+                      {{ upcoming_events }}
+                  </a>
+              </p>
+          </div>
+
+
+          <!-- Past Event -->
+          <div class="group bg-gradient-to-br from-orange-700 to-red-600 
+                      rounded-2xl p-6 shadow-lg 
+                      transition duration-300 transform hover:-translate-y-2 hover:shadow-2xl">
+
+              <h3 class="text-sm font-semibold text-orange-100 tracking-wide mb-3">
+                  TOTAL PAST EVENT
+              </h3>
+
+              <p class="text-4xl font-bold text-white">
+                  <a href="?filter=past"
+                    class="transition duration-300 group-hover:scale-110 inline-block">
+                      {{ past_events }}
+                  </a>
+              </p>
+          </div>
         </div>
-        <div class='w-full p-10'>
-            <div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-5'>
-        
-                
-                {% comment %} Total Participant  {% endcomment %}
-                <div class='bg-orange-600 rounded-xl p-6 shadow-sm'>
-                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL PARTICIPANT</h3>
-                    <p class='text-3xl font-semibold text-white mb-1'>{{total_participant}}</p>
-                </div>
-                {% comment %} Total Event  {% endcomment %}
-                <div class='bg-orange-600 rounded-xl p-6 shadow-sm'>
-                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL EVENT</h3>
-                    <p class='text-3xl font-semibold text-white mb-1'>
-                        <a href="?filter=all" class='hover:text-white text-white font-bold text-4xl'>{{total_event}}</a>
-                    </p>
-                </div>
-                {% comment %} Upcomming Event  {% endcomment %}
-                <div class='bg-orange-600 rounded-xl p-6 shadow-sm'>
-                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL UPCOMMING EVENT</h3>
-                    <p class='text-3xl font-semibold text-white mb-1'>
-                        <a href="?filter=upcoming" class='hover:text-white text-white font-bold text-4xl'>{{upcoming_events}}</a>
-                    </p>
-                </div>
-                {% comment %} Past Event  {% endcomment %}
-                <div class='bg-orange-600 rounded-xl p-6 shadow-sm'>
-                    <h3 class='text-sm font-bold text-white mb-4'>TOTAL PAST EVENT</h3>
-                    <p class='text-3xl font-semibold text-white mb-1'>
-                        <a href="?filter=past" class='hover:text-white text-white font-bold text-4xl'>{{past_events}}</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
     <div class = 'mt-10'>
         <h3 class='text-lg font-bold text-orange-500 text-center '>{{title}}</h3>
@@ -140,6 +184,9 @@
         </ul>
 
     </div>
+  </section>
+
+
     <footer class="bg-black text-white py-12">
         <div class="container mx-auto px-6">
             <div class="flex flex-wrap justify-between">
@@ -194,6 +241,6 @@
             document.getElementById("user-menu").classList.add("hidden");
           }
         });
-      </script>
+    </script>
 </body>
 </html>

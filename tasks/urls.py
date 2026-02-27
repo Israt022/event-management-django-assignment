@@ -1,9 +1,11 @@
 from django.urls import path
-from tasks.views import main,category_form,event_form,dashboard,category_list,event_list,participant_list,category_update,category_delete,event_update,event_delete,participant_delete,event_detail,rsvp_event,rsvp_view,CategoryFormView,CategoryListView,CategoryUpdateView,CategoryDeleteView,dashboardMain
+from tasks.views import main,category_form,event_form,dashboard,category_list,event_list,participant_list,category_update,category_delete,event_update,event_delete,participant_delete,event_detail,rsvp_event,rsvp_view,CategoryFormView,CategoryListView,CategoryUpdateView,CategoryDeleteView,dashboardMain,about_view,contact_view
 
 
 urlpatterns = [
     path('main/', main ,name='main'),
+    path('about_us/', about_view ,name='about_us'),
+    path('contact_us/', contact_view ,name='contact_us'),
     path('dashboard/', dashboard , name = 'dashboard'),
     path('dashboardMain/', dashboardMain , name = 'dashboardMain'),
     # path('category_list/', category_list , name = 'category_list'),

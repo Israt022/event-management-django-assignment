@@ -34,6 +34,28 @@ def is_admin_or_organizer(user):
     return user.groups.filter(name__in = ['Admin','Organizer']).exists()
 def is_admin_or_user(user):
     return user.groups.filter(name__in = ['Admin','User']).exists()
+
+# About views 
+@login_required  
+def about_view(request):
+    """
+    About Us page view
+    """
+    admins = User.objects.filter(groups__name='Admin')
+    organizers = User.objects.filter(groups__name='Organizer')
+
+    context = {
+        'admins': admins,
+        'organizers': organizers,
+    }
+    return render(request, 'dashboard/aboutUs.html',context)
+@login_required  
+def contact_view(request):
+    """
+    Contact Us page view
+    """
+
+    return render(request, 'dashboard/contact.html')
  
 @login_required
 @user_passes_test(is_admin_or_user,login_url='no-permission')

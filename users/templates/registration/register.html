@@ -1,24 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
-        <a href="{% url 'home' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>EventNest</a>
+<div class="fixed top-0 z-50 w-full flex justify-between items-center px-6 py-4 bg-orange-500 bg-opacity-30 backdrop-blur-md">
+          
+          <!-- Logo -->
+          <div class="flex items-center">
+              <a href="{% url 'home' %}"  
+                class="text-5xl font-extrabold bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-transparent bg-clip-text drop-shadow-lg hover:scale-105 transition-transform duration-300">
+                EventNest
+              </a>
+          </div>
         <div class='flex justify-between'>
             <ul class='flex gap-5 spacey-4'>
-                <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>Home</p>
-                <p class='cursor-pointer  text-white hover:text-yellow-400 font-semibold'>About</p>
-                <p class='cursor-pointer text-white hover:text-yellow-400 font-semibold'>Contact</p>
+                <li><a href="{% url 'home' %}"  class='font-bold text-orange-500 hover:text-yellow-500'>Home</a></li>
+                
+                <a href="{% url 'about_us' %}" class="font-bold text-orange-500 hover:text-yellow-500">About Us</a>
+                <a href="{% url 'contact_us' %}" class="font-bold text-orange-500 hover:text-yellow-500">Contact Us</a>
+                
+                
             </ul>
         </div>
         
         <div class="flex gap-1">
             <a
             href="{% url 'sign-in' %}"
-            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            class="hidden md:block bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
             >Sign In</a
             >
             <a
             href="{% url 'sign-up' %}"
-            class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
+            class="hidden md:block bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300"
             >Sign Up</a
             >
         </div>
@@ -26,34 +36,54 @@
         
     </div>
     {% comment %}  {% endcomment %}
-    <div class='mx-auto my-9  w-1/2'>
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-                {{error}}
-            {% endfor %}
-        {% endif %}
-        <form action="" method = 'POST'>
-            {% csrf_token %}
-            {% for field in form %}
-                <p>
-                    <label for="{{field.id_for_label}}">
-                        {{field.label}}
-                    </label>
-                    {{field}}
+    <div class="min-h-screen flex items-center justify-center bg-orange-100 ">
 
-                    {% if field.errors %}
-                            <ul>
-                                {% for error in field.errors %}
-                                <li>
-                                    {{error}}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        
-                    {% endif %}
-                </p>
-            {% endfor %}
-            <button class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 mt-3" type='submit'>Sign Up</button>
-        </form>
+        <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl my-5 mt-[100px]">
+
+            <h2 class="text-2xl font-bold text-center text-orange-600 mb-6">
+                Create Account
+            </h2>
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    {{error}}
+                {% endfor %}
+            {% endif %}
+            <form action="" method = 'POST'>
+                {% csrf_token %}
+                {% for field in form %}
+                    <p>
+                        <label for="{{field.id_for_label}}">
+                            {{field.label}}
+                        </label>
+                        {{field}}
+
+                        {% if field.errors %}
+                                <ul>
+                                    {% for error in field.errors %}
+                                    <li>
+                                        {{error}}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            
+                        {% endif %}
+                    </p>
+                {% endfor %}
+                {% comment %} <button class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300 mt-3" type='submit'>Sign Up</button> {% endcomment %}
+                 <button 
+                    type="submit"
+                    class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition duration-300 mt-4"
+                >
+                    Sign Up
+                </button>
+            </form>
+            <p class="text-center mt-4 text-sm">
+                Already have an account?
+                <a href="{% url 'sign-in' %}" class="text-orange-500 hover:underline">
+                    Sign In
+                </a>
+            </p>
+        </div>
+
     </div>
 {% endblock content %}

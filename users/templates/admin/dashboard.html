@@ -4,37 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script> 
 </head>
 <body class=''>
-    <div class = ''>
-        <div class='w-full bg-orange-600 flex justify-between items-center px-10 py-7' >
-            <a href="{% url 'admin-dashboard' %}" class='text-3xl font-bold text-orange-100 mb-6 hover:text-orange-300'>Dashboard</a>
+    <header>
+      <div class = ''>
+        <div class="sticky top-0 z-50 w-full flex justify-between items-center px-6 py-4 bg-orange-500 bg-opacity-30 backdrop-blur-md">
+          <div class="flex items-center">
+              <a href="{% url 'main' %}" 
+                class="text-4xl font-extrabold bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 text-transparent bg-clip-text drop-shadow-lg hover:scale-105 transition-transform duration-300">
+                EventNest
+              </a>
+          </div>
             <div class='flex justify-between'>
                 <ul class='flex gap-5 spacey-4'>
-                    <li><a href="{% url 'main' %}" class='text-orange-100 font-bold hover:text-orange-300'>Home</a></li>
-                    <li><a href="{% url 'group-list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Groups</a></li>
-                    <li><a href="{% url 'create-group' %}" class='text-orange-100 font-bold hover:text-orange-300'>Create Group</a></li>
+                    {% comment %} <li><a href="{% url 'main' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Home</a></li> {% endcomment %}
+                    <li><a href="{% url 'group-list' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Groups</a></li>
+                    <li><a href="{% url 'create-group' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Create Group</a></li>
                     {% comment %} <li><a href="{% url 'rsvp_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Event RSVP</a></li> {% endcomment %}
-                    <li><a href="{% url 'category_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Category</a></li>
-                    <li><a href="{% url 'event_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Event</a></li>
-                    <li><a href="{% url 'participant_list' %}" class='text-orange-100 font-bold hover:text-orange-300'>Participant</a></li>
+                    <li><a href="{% url 'category_list' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Category</a></li>
+                    <li><a href="{% url 'event_list' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Event</a></li>
+                    <li><a href="{% url 'participant_list' %}" class='font-bold text-orange-500 hover:text-yellow-500'>Participant</a></li>
                     
                 </ul>
             </div>
             
-            <div class="flex items-center">
+             <div class="flex items-center">
                 <div class="relative">
-                  <button
-                    id="user-menu-button"
-                    class="flex items-center focus:outline-none"
-                  >
-                    <img
-                      class="h-8 w-8 rounded-full object-cover"
-                      src="{% static 'images/pp.png' %}"
-                      alt="User avatar"
-                    />
+                  <button id="user-menu-button" class="flex items-center focus:outline-none">
+                      <img class="h-10 w-10 rounded-full object-cover border-2 border-orange-400"
+                          src="{% if request.user.is_authenticated and request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'images/pp.png' %}{% endif %}" 
+                          alt="User avatar" />
                   </button>
                   <div
                     id="user-menu"
@@ -107,6 +108,7 @@
             });
           </script>
     </div>
+    </header>
     <main class='my-20'>
         {% block content %}
             {% include "admin/user_list.html" %}
