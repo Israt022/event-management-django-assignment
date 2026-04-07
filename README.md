@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=2500&pause=1000&color=FFA500&center=true&vCenter=true&width=600&lines=🚀+EventNest+-+Event+Management+System" alt="EventNest Typing Title"/>
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=2500&pause=1000&color=FFA500&center=true&vCenter=true&width=600&lines=+EventNest+-+Event+Management+System" alt="EventNest Typing Title"/>
 </p>
 
 **⚡ Event Management System:** Event Management System is a full-featured web application built with Django and Django Templates, styled using Tailwind CSS. The system allows users to manage events, participants, and categories, with optimized queries and a responsive front-end. Admins can manage all data, and users can search, filter, and view event details.
